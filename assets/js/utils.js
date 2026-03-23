@@ -83,6 +83,14 @@ async function getParticipants() {
 }
 
 /**
+ * Get participants filtered by gender
+ */
+async function getParticipantsByGender(gender) {
+    const params = new URLSearchParams({ action: 'list', gender: gender });
+    return apiRequest(`participants.php?${params.toString()}`);
+}
+
+/**
  * Create participant
  */
 async function createParticipant(name, number, group, gender = 'Heren') {
@@ -121,6 +129,14 @@ async function getApparatus() {
 }
 
 /**
+ * Get apparatus filtered by gender
+ */
+async function getApparatusByGender(gender) {
+    const params = new URLSearchParams({ action: 'list', gender: gender });
+    return apiRequest(`apparatus.php?${params.toString()}`);
+}
+
+/**
  * Submit score
  */
 async function submitScore(participantId, apparatusId, dScore, eScore, nScore) {
@@ -150,15 +166,32 @@ async function getApprovedScores() {
 /**
  * Get top 10 scores
  */
-async function getTop10Scores() {
-    return apiRequest('scores.php?action=top10');
+async function getTop10Scores(gender = '') {
+    const params = new URLSearchParams({ action: 'top10' });
+    if (gender === 'Heren' || gender === 'Dames') {
+        params.append('gender', gender);
+    }
+
+    return apiRequest(`scores.php?${params.toString()}`);
 }
 
 /**
  * Get latest approved score for main display
  */
-async function getCurrentScore() {
-    return apiRequest('scores.php?action=current');
+async function getCurrentScore(gender = '') {
+    const params = new URLSearchParams({ action: 'current' });
+    if (gender === 'Heren' || gender === 'Dames') {
+        params.append('gender', gender);
+    }
+
+    return apiRequest(`scores.php?${params.toString()}`);
+}
+
+/**
+ * Get score history by participant
+ */
+async function getScoresByParticipant(participantId) {
+    return apiRequest(`scores.php?action=by-participant&id=${participantId}`);
 }
 
 /**
@@ -281,6 +314,9 @@ function validateScore(dScore, eScore, nScore) {
     const d = parseFloat(dScore);
     const e = parseFloat(eScore);
     const n = parseFloat(nScore);
+    const MAX_D_SCORE = 20;
+    const MAX_E_SCORE = 10;
+    const MAX_N_SCORE = 10;
     
     if (isNaN(d) || isNaN(e) || isNaN(n)) {
         return { valid: false, error: 'Alle scores moeten getallen zijn' };
@@ -290,8 +326,8 @@ function validateScore(dScore, eScore, nScore) {
         return { valid: false, error: 'Scores kunnen niet negatief zijn' };
     }
     
-    if (d > 10 || e > 10 || n > 10) {
-        return { valid: false, error: 'Scores kunnen niet hoger dan 10 zijn' };
+    if (d > MAX_D_SCORE || e > MAX_E_SCORE || n > MAX_N_SCORE) {
+        return { valid: false, error: `Ongeldige scorelimiet: D max ${MAX_D_SCORE}, E en N max ${MAX_E_SCORE}` };
     }
     
     return { valid: true };

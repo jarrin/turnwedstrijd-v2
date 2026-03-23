@@ -20,6 +20,15 @@ $apparatus = new Apparatus($db);
 $method = $_SERVER['REQUEST_METHOD'];
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
+function normalizeGender($value): ?string {
+    $gender = trim((string) $value);
+    if ($gender === 'Heren' || $gender === 'Dames') {
+        return $gender;
+    }
+
+    return null;
+}
+
 try {
     if ($method === 'OPTIONS') {
         http_response_code(200);
@@ -27,7 +36,10 @@ try {
     }
 
     if ($method === 'GET' && $action === 'list') {
-        $data = $apparatus->getAll();
+        $gender = normalizeGender($_GET['gender'] ?? '');
+        $data = $gender !== null
+            ? $apparatus->getByGender($gender)
+            : $apparatus->getAll();
         echo json_encode(['success' => true, 'data' => $data]);
     } else {
         echo json_encode(['success' => false, 'error' => 'Invalid request']);

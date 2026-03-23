@@ -30,6 +30,15 @@ function positiveInt($value): int {
     return $validated === false ? 0 : (int) $validated;
 }
 
+function normalizeGender($value): ?string {
+    $gender = trim((string) $value);
+    if ($gender === 'Heren' || $gender === 'Dames') {
+        return $gender;
+    }
+
+    return null;
+}
+
 // Ensure required files exist before including them (avoid fatal include errors)
 $baseDir = dirname(__DIR__);
 $cfgFile = $baseDir . '/config/database.php';
@@ -57,7 +66,10 @@ try {
     switch ($method) {
         case 'GET':
             if ($action === 'list') {
-                $participants = $participant->getAll();
+                $gender = normalizeGender($_GET['gender'] ?? '');
+                $participants = $gender !== null
+                    ? $participant->getAllByGender($gender)
+                    : $participant->getAll();
                 echo json_encode(['success' => true, 'data' => $participants]);
             } elseif ($action === 'get') {
                 $id = positiveInt($_GET['id'] ?? 0);

@@ -34,6 +34,15 @@ function readJsonBody(): array {
     return is_array($data) ? $data : [];
 }
 
+function normalizeGender($value): ?string {
+    $gender = trim((string) $value);
+    if ($gender === 'Heren' || $gender === 'Dames') {
+        return $gender;
+    }
+
+    return null;
+}
+
 $baseDir = dirname(__DIR__);
 require_once $baseDir . '/config/database.php';
 require_once $baseDir . '/classes/Database.php';
@@ -59,10 +68,12 @@ try {
                 $scores = $score->getApproved();
                 respond(['success' => true, 'data' => $scores]);
             } elseif ($action === 'top10') {
-                $scores = $score->getTop10();
+                $gender = normalizeGender($_GET['gender'] ?? '');
+                $scores = $score->getTop10($gender);
                 respond(['success' => true, 'data' => $scores]);
             } elseif ($action === 'current') {
-                $current = $score->getLatestApproved();
+                $gender = normalizeGender($_GET['gender'] ?? '');
+                $current = $score->getLatestApproved($gender);
                 respond(['success' => true, 'data' => $current]);
             } elseif ($action === 'by-participant') {
                 $participantId = positiveInt($_GET['id'] ?? 0);

@@ -51,7 +51,7 @@
                     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.25rem;">
                         <div class="den-score-item d">
                             <span class="den-label">D-Score</span>
-                            <input type="number" id="editDScore" step="0.1" min="0" max="10" required style="margin-top:.5rem;">
+                            <input type="number" id="editDScore" step="0.1" min="0" max="20" required style="margin-top:.5rem;">
                         </div>
                         <div class="den-score-item e">
                             <span class="den-label">E-Score</span>
@@ -170,8 +170,8 @@
 
         // Approve score (handler) — calls the API helper in `assets/js/utils.js`
         async function approveScoreHandler(id) {
-            const result = await (window.approveScore ? window.approveScore(id) : null);
-            if (result && result.success) {
+            const result = await approveScore(id);
+            if (result.success) {
                 showToast('Score goedgekeurd!', 'success');
                 refreshScores();
             } else {

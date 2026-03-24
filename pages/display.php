@@ -21,13 +21,21 @@
             </nav>
         </div>
     </header>
-
+ 
     <div class="container">
         <div style="margin-bottom:1.5rem;">
             <p style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:.2rem;">Live weergave</p>
             <h2 style="font-size:1.4rem;font-weight:800;color:var(--text-primary);letter-spacing:-.02em;">Hoofdscherm</h2>
+            <div style="margin-top:.9rem;max-width:280px;">
+                <label for="displayGenderFilter" style="margin-bottom:.35rem;">Filter geslacht</label>
+                <select id="displayGenderFilter">
+                    <option value="">Alle deelnemers</option>
+                    <option value="Heren">Heren</option>
+                    <option value="Dames">Dames</option>
+                </select>
+            </div>
         </div>
-
+ 
         <div class="display-container">
             <!-- Current Score -->
             <div class="current-score">
@@ -39,7 +47,7 @@
                     </div>
                 </div>
             </div>
-
+ 
             <!-- Leaderboard -->
             <div class="leaderboard-container">
                 <h3>🏆 Top 10 Klassement</h3>
@@ -52,37 +60,50 @@
             </div>
         </div>
     </div>
-
+ 
     <script src="../assets/js/utils.js"></script>
     <script>
+        let lastRenderedScoreKey = '';
+        const displayGenderFilter = document.getElementById('displayGenderFilter');
+ 
+        displayGenderFilter.addEventListener('change', () => {
+            lastRenderedScoreKey = '';
+            refreshDisplay();
+        });
+ 
         // Load display on page load
         refreshDisplay();
-        
+       
         // Auto-refresh every 3 seconds
         setInterval(refreshDisplay, 3000);
-
+ 
         // Refresh display
         async function refreshDisplay() {
             await loadCurrentScore();
             await loadLeaderboard();
         }
-
+ 
         // Load current score
         async function loadCurrentScore() {
-            const result = await getCurrentScore();
+            const selectedGender = displayGenderFilter.value;
+            const result = await getCurrentScore(selectedGender);
             const container = document.getElementById('currentScoreDisplay');
-            
+           
             if (!result.success || !result.data) {
                 container.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-secondary);">Geen score beschikbaar</p>';
                 return;
             }
-            
+           
             const score = result.data;
-            
+            const currentScoreKey = `${score.id || ''}_${score.submitted_at || ''}`;
+            const isNewScore = currentScoreKey !== '' && currentScoreKey !== lastRenderedScoreKey;
+            lastRenderedScoreKey = currentScoreKey;
+           
             let html = `
-                <div style="padding:2rem 1.5rem 1.5rem">
+                <div class="${isNewScore ? 'score-updated-flash' : ''}" style="padding:2rem 1.5rem 1.5rem">
                     <div class="participant-name">${escapeHtml(score.name)}</div>
                     <div class="apparatus-name">&#127941; ${escapeHtml(score.apparatus_name)}</div>
+                    <div style="font-size:.78rem;color:var(--text-muted);margin:-1rem 0 1.2rem 0;">Laatst bijgewerkt: ${formatDate(score.submitted_at)}</div>
                     <div class="den-scores" style="margin-top:1.25rem;">
                         <div class="den-score-item d">
                             <span class="den-label">D-Score</span>
@@ -103,25 +124,26 @@
                     </div>
                 </div>
             `;
-            
+           
             container.innerHTML = html;
         }
-
+ 
         // Load leaderboard
         async function loadLeaderboard() {
-            const result = await getTop10Scores();
+            const selectedGender = displayGenderFilter.value;
+            const result = await getTop10Scores(selectedGender);
             const container = document.getElementById('leaderboardDisplay');
-            
+           
             if (!result.success || !result.data || result.data.length === 0) {
                 container.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-secondary);">Nog geen scores beschikbaar</p>';
                 return;
             }
-            
+           
             let html = '';
             result.data.forEach((score, index) => {
                 let rankClass = '';
                 let rankSymbol = (index + 1) + '.';
-                
+               
                 if (index === 0) {
                     rankClass = 'gold';
                     rankSymbol = '🥇';
@@ -132,7 +154,7 @@
                     rankClass = 'bronze';
                     rankSymbol = '🥉';
                 }
-                
+               
                 html += `
                     <div class="leaderboard-item">
                         <div class="rank ${rankClass}">${rankSymbol}</div>
@@ -144,7 +166,7 @@
                     </div>
                 `;
             });
-            
+           
             container.innerHTML = html;
         }
     </script>

@@ -411,6 +411,14 @@ tbody tr:hover { background: rgba(30,111,191,.05); }
 .module-icon    { font-size:2.5rem; margin-bottom:1rem; display:block; }
 .module-icon i  { font-size:inherit; line-height:1; }
 
+.home-subtitle {
+    font-size: .85rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--text-muted);
+    margin-bottom: .6rem;
+}
+
 /*  Participants Page  */
 .participants-form-grid {
     display: grid;
@@ -446,6 +454,19 @@ tbody tr:hover { background: rgba(30,111,191,.05); }
     align-items: center;
     gap: 1rem;
     margin-bottom: .8rem;
+}
+
+.participants-filter-row {
+    margin-bottom: 1rem;
+    padding-bottom: .9rem;
+}
+
+.participants-filter-group {
+    max-width: 260px;
+}
+
+.participants-filter-group label {
+    margin-bottom: .35rem;
 }
 
 /*  Secretariat Page  */
@@ -497,6 +518,20 @@ tbody tr:hover { background: rgba(30,111,191,.05); }
     grid-template-columns: repeat(4, 1fr);
     gap: .75rem;
     margin-bottom: 1.25rem;
+}
+
+.secretariat-filter-row {
+    margin-bottom: 1rem;
+    padding-bottom: .9rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.secretariat-filter-group {
+    max-width: 260px;
+}
+
+.secretariat-filter-group label {
+    margin-bottom: .35rem;
 }
 
 .secretariat-edit-input,

@@ -21,7 +21,7 @@
 
     <div class="container">
         <div style="text-align:center; margin-bottom:2.5rem; padding-top:.5rem;">
-            <p style="font-size:.85rem; text-transform:uppercase; letter-spacing:.12em; color:var(--text-muted); margin-bottom:.6rem;">Systeem Modules</p>
+            <p class="home-subtitle">Turnwedstrijd Portaal</p>
             <h2 style="font-size:2rem; font-weight:800; color:var(--text-primary); letter-spacing:-.03em;">Selecteer een module</h2>
         </div>
 

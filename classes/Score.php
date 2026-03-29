@@ -33,6 +33,7 @@ class Score {
                 s.ingevoerd_op AS submitted_at,
                 d.naam AS name,
                 d.lidnummer AS number,
+                d.geslacht AS gender,
                 o.naam AS apparatus_name,
                 ss.status AS status_text
             FROM score s

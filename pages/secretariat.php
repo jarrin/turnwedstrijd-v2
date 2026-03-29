@@ -11,14 +11,14 @@
     <header>
         <div class="header-inner">
             <div class="header-brand">
-                <div class="brand-icon">✅</div>
+                <div class="brand-icon"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i></div>
                 <div class="brand-text">
                     <h1>Turnen Wedstrijd Beoordeling Systeem</h1>
                     <p>Secretariaat &mdash; Score Controle</p>
                 </div>
             </div>
             <nav class="header-nav">
-                <a href="../index.php">← Home</a>
+                <a href="../index.php"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
             </nav>
         </div>
     </header>
@@ -32,54 +32,54 @@
             </div>
         </div>
 
-        <div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2200;align-items:center;justify-content:center;backdrop-filter:blur(5px);">
-            <div style="background:var(--bg-card);border:1px solid var(--border-light);width:min(760px,94vw);padding:1.5rem;border-radius:16px;box-shadow:0 24px 72px rgba(0,0,0,.6);">
-                <h3 style="margin:0 0 1.25rem 0;color:var(--text-primary);font-size:1.05rem;font-weight:700;">Score Bewerken</h3>
+        <div id="editModal" class="modal-overlay secretariat-edit-modal">
+            <div class="secretariat-modal-box secretariat-edit-box">
+                <h3 class="modal-title secretariat-modal-title-lg">Score Bewerken</h3>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border);">
+                <div class="secretariat-edit-meta">
                     <div>
-                        <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">Kandidaat</div>
-                        <div id="editCandidate" style="font-size:1rem;font-weight:700;color:var(--text-primary);">-</div>
+                        <div class="secretariat-meta-label">Kandidaat</div>
+                        <div id="editCandidate" class="secretariat-meta-value">-</div>
                     </div>
                     <div>
-                        <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">Onderdeel</div>
-                        <div id="editApparatus" style="font-size:1rem;font-weight:700;color:var(--text-primary);">-</div>
+                        <div class="secretariat-meta-label">Onderdeel</div>
+                        <div id="editApparatus" class="secretariat-meta-value">-</div>
                     </div>
                 </div>
 
                 <form id="editScoreForm">
-                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.25rem;">
+                    <div class="secretariat-edit-grid">
                         <div class="den-score-item d">
                             <span class="den-label">D-Score</span>
-                            <input type="number" id="editDScore" step="0.1" min="0" max="20" required style="margin-top:.5rem;">
+                            <input type="number" id="editDScore" step="0.1" min="0" max="20" required class="secretariat-edit-input">
                         </div>
                         <div class="den-score-item e">
                             <span class="den-label">E-Score</span>
-                            <input type="number" id="editEScore" step="0.1" min="0" max="10" required style="margin-top:.5rem;">
+                            <input type="number" id="editEScore" step="0.1" min="0" max="10" required class="secretariat-edit-input">
                         </div>
                         <div class="den-score-item n">
                             <span class="den-label">N-Score</span>
-                            <input type="number" id="editNScore" step="0.1" min="0" max="10" required style="margin-top:.5rem;">
+                            <input type="number" id="editNScore" step="0.1" min="0" max="10" required class="secretariat-edit-input">
                         </div>
-                        <div class="den-score-item total" style="text-align:center;">
+                        <div class="den-score-item total secretariat-total-cell">
                             <span class="den-label">Totaal</span>
-                            <div id="editTotal" class="den-val" style="margin-top:.5rem;">0.00</div>
+                            <div id="editTotal" class="den-val secretariat-total-value">0.00</div>
                         </div>
                     </div>
 
-                    <div style="display:flex;gap:.6rem;justify-content:flex-end;padding-top:1rem;border-top:1px solid var(--border);">
+                    <div class="modal-actions">
                         <button type="button" class="btn btn-ghost" id="cancelEditBtn">Annuleren</button>
-                        <button type="submit" class="btn btn-success">&#10003; Opslaan</button>
+                        <button type="submit" class="btn btn-success"><i class="fa-solid fa-check" aria-hidden="true"></i> Opslaan</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div id="rejectModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2200;align-items:center;justify-content:center;">
-            <div style="background:var(--bg-card);border:1px solid var(--border-light);width:min(520px,92vw);padding:1.5rem;border-radius:16px;">
-                <h3 style="margin:0 0 .75rem 0;color:var(--text-primary);font-size:1.05rem;font-weight:700;">Score Afwijzen</h3>
-                <p id="rejectModalText" style="margin:0 0 1.25rem 0;color:var(--text-secondary);">Weet je zeker dat je deze score wilt afwijzen?</p>
-                <div style="display:flex;gap:.6rem;justify-content:flex-end;padding-top:1rem;border-top:1px solid var(--border);">
+        <div id="rejectModal" class="modal-overlay secretariat-reject-modal">
+            <div class="secretariat-modal-box secretariat-reject-box">
+                <h3 class="modal-title">Score Afwijzen</h3>
+                <p id="rejectModalText" class="modal-description">Weet je zeker dat je deze score wilt afwijzen?</p>
+                <div class="modal-actions">
                     <button type="button" class="btn btn-ghost" id="cancelRejectBtn">Nee, annuleren</button>
                     <button type="button" class="btn btn-danger" id="confirmRejectBtn">Ja, afwijzen</button>
                 </div>
@@ -89,6 +89,10 @@
 
     <script src="../assets/js/utils.js"></script>
     <script>
+        const SCORES_PER_PAGE = 6;
+        let allPendingScores = [];
+        let currentScoresPage = 1;
+
         // Load scores on page load
         refreshScores();
 
@@ -123,19 +127,35 @@
             const container = document.getElementById('scoresList');
             
             if (!result.success || !result.data || result.data.length === 0) {
-                container.innerHTML = '<p style="text-align:center;padding:2.5rem;color:var(--text-secondary);">Geen wachtende scores</p>';
+                allPendingScores = [];
+                currentScoresPage = 1;
+                container.innerHTML = '<p class="empty-state">Geen wachtende scores</p>';
                 return;
             }
+
+            allPendingScores = result.data;
+            const totalPages = Math.ceil(allPendingScores.length / SCORES_PER_PAGE);
+
+            if (currentScoresPage > totalPages) {
+                currentScoresPage = totalPages;
+            }
+            if (currentScoresPage < 1) {
+                currentScoresPage = 1;
+            }
+
+            const startIndex = (currentScoresPage - 1) * SCORES_PER_PAGE;
+            const endIndex = startIndex + SCORES_PER_PAGE;
+            const visibleScores = allPendingScores.slice(startIndex, endIndex);
             
             let html = '';
-            result.data.forEach(score => {
+            visibleScores.forEach(score => {
                 html += `
-                    <div class="card" style="border-left:4px solid var(--warning);">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:1.25rem;align-items:start;">
+                    <div class="card pending-score-card">
+                        <div class="pending-score-layout">
                             <div>
-                                <div style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:.4rem;">${escapeHtml(score.name)} <span style="font-weight:400;color:var(--text-muted);font-size:.9rem;">#${escapeHtml(score.number)}</span></div>
-                                <div style="font-size:.85rem;color:var(--text-secondary);margin-bottom:.25rem;">&#127941; <strong>${escapeHtml(score.apparatus_name)}</strong></div>
-                                <div style="font-size:.78rem;color:var(--text-muted);">Ingediend: ${formatDate(score.submitted_at)}</div>
+                                <div class="pending-score-name">${escapeHtml(score.name)} <span class="pending-score-number">#${escapeHtml(score.number)}</span></div>
+                                <div class="pending-score-apparatus"><i class="fa-solid fa-medal" aria-hidden="true"></i> <strong>${escapeHtml(score.apparatus_name)}</strong></div>
+                                <div class="pending-score-submitted">Ingediend: ${formatDate(score.submitted_at)}</div>
                             </div>
                             <div class="den-scores">
                                 <div class="den-score-item d">
@@ -156,16 +176,46 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="display:flex;gap:.75rem;padding-top:1rem;border-top:1px solid var(--border);">
-                            <button class="btn btn-success btn-sm" onclick="approveScoreHandler(${score.id})">&#10003; Goedkeuren</button>
-                            <button class="btn btn-danger btn-sm" onclick="rejectScoreHandler(${score.id})">&#10007; Afwijzen</button>
-                            <button class="btn btn-warning btn-sm" onclick="editScoreHandler(${score.id}, ${score.d_score}, ${score.e_score}, ${score.n_score}, '${encodeURIComponent(score.name)}', '${encodeURIComponent(score.number)}', '${encodeURIComponent(score.apparatus_name)}')">&#9998; Bewerken</button>
+                        <div class="pending-score-actions">
+                            <button class="btn btn-success btn-sm" onclick="approveScoreHandler(${score.id})"><i class="fa-solid fa-check" aria-hidden="true"></i> Goedkeuren</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectScoreHandler(${score.id})"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Afwijzen</button>
+                            <button class="btn btn-warning btn-sm" onclick="editScoreHandler(${score.id}, ${score.d_score}, ${score.e_score}, ${score.n_score}, '${encodeURIComponent(score.name)}', '${encodeURIComponent(score.number)}', '${encodeURIComponent(score.apparatus_name)}')"><i class="fa-solid fa-pen" aria-hidden="true"></i> Bewerken</button>
                         </div>
                     </div>
                 `;
             });
+
+            if (allPendingScores.length > SCORES_PER_PAGE) {
+                const prevDisabled = currentScoresPage === 1 ? 'disabled' : '';
+                const nextDisabled = currentScoresPage === totalPages ? 'disabled' : '';
+
+                html += `
+                    <div class="pagination-bar pagination-bar-compact">
+                        <div class="pagination-info">
+                            Toon ${startIndex + 1}-${Math.min(endIndex, allPendingScores.length)} van ${allPendingScores.length} wachtende scores
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="btn btn-ghost btn-sm" onclick="changeScoresPage(-1)" ${prevDisabled}><i class="fa-solid fa-chevron-left" aria-hidden="true"></i> Vorige</button>
+                            <span class="pagination-indicator">Pagina ${currentScoresPage} / ${totalPages}</span>
+                            <button class="btn btn-primary btn-sm" onclick="changeScoresPage(1)" ${nextDisabled}>Volgende <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                `;
+            }
             
             container.innerHTML = html;
+        }
+
+        function changeScoresPage(direction) {
+            const totalPages = Math.ceil(allPendingScores.length / SCORES_PER_PAGE);
+            const nextPage = currentScoresPage + direction;
+
+            if (nextPage < 1 || nextPage > totalPages) {
+                return;
+            }
+
+            currentScoresPage = nextPage;
+            refreshScores();
         }
 
         // Approve score (handler) — calls the API helper in `assets/js/utils.js`

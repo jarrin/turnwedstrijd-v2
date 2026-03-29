@@ -11,14 +11,14 @@
     <header>
         <div class="header-inner">
             <div class="header-brand">
-                <div class="brand-icon">⚡</div>
+                <div class="brand-icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></div>
                 <div class="brand-text">
                     <h1>Turnen Wedstrijd Beoordeling Systeem</h1>
                     <p>Jury Invoer &mdash; DEN Score Systeem</p>
                 </div>
             </div>
             <nav class="header-nav">
-                <a href="../index.php">← Home</a>
+                <a href="../index.php"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
             </nav>
         </div>
     </header>

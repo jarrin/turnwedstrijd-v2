@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hoofdscherm - Turnen Score Systeem</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="display-mode">
     <header>
         <div class="header-inner">
             <div class="header-brand">
-                <div class="brand-icon">📺</div>
+                <div class="brand-icon"><i class="fa-solid fa-tv" aria-hidden="true"></i></div>
                 <div class="brand-text">
                     <h1>Turnen Wedstrijd Beoordeling Systeem</h1>
                     <p>Hoofdscherm &mdash; Live Klassement</p>
                 </div>
             </div>
             <nav class="header-nav">
-                <a href="../index.php">← Home</a>
+                <a href="../index.php"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
             </nav>
         </div>
     </header>
@@ -50,7 +51,7 @@
  
             <!-- Leaderboard -->
             <div class="leaderboard-container">
-                <h3>🏆 Top 10 Klassement</h3>
+                <h3><i class="fa-solid fa-trophy" aria-hidden="true"></i> Top 10 Klassement</h3>
                 <div id="leaderboardDisplay">
                     <div class="loading">
                         <div class="spinner"></div>
@@ -102,7 +103,7 @@
             let html = `
                 <div class="${isNewScore ? 'score-updated-flash' : ''}" style="padding:2rem 1.5rem 1.5rem">
                     <div class="participant-name">${escapeHtml(score.name)}</div>
-                    <div class="apparatus-name">&#127941; ${escapeHtml(score.apparatus_name)}</div>
+                    <div class="apparatus-name"><i class="fa-solid fa-medal" aria-hidden="true"></i> ${escapeHtml(score.apparatus_name)}</div>
                     <div style="font-size:.78rem;color:var(--text-muted);margin:-1rem 0 1.2rem 0;">Laatst bijgewerkt: ${formatDate(score.submitted_at)}</div>
                     <div class="den-scores" style="margin-top:1.25rem;">
                         <div class="den-score-item d">
@@ -146,13 +147,13 @@
                
                 if (index === 0) {
                     rankClass = 'gold';
-                    rankSymbol = '🥇';
+                    rankSymbol = '<i class="fa-solid fa-medal" aria-hidden="true"></i>';
                 } else if (index === 1) {
                     rankClass = 'silver';
-                    rankSymbol = '🥈';
+                    rankSymbol = '<i class="fa-solid fa-medal" aria-hidden="true"></i>';
                 } else if (index === 2) {
                     rankClass = 'bronze';
-                    rankSymbol = '🥉';
+                    rankSymbol = '<i class="fa-solid fa-medal" aria-hidden="true"></i>';
                 }
                
                 html += `

@@ -11,14 +11,14 @@
     <header>
         <div class="header-inner">
             <div class="header-brand">
-                <div class="brand-icon">👥</div>
+                <div class="brand-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></div>
                 <div class="brand-text">
                     <h1>Turnen Wedstrijd Beoordeling Systeem</h1>
                     <p>Deelnemersbeheer</p>
                 </div>
             </div>
             <nav class="header-nav">
-                <a href="../index.php">← Home</a>
+                <a href="../index.php"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
             </nav>
         </div>
     </header>
@@ -27,7 +27,7 @@
         <div class="card">
             <h2>Voeg Deelnemer Toe</h2>
             <form id="participantForm">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div class="participants-form-grid">
                     <div class="form-group">
                         <label for="name">Naam</label>
                         <input type="text" id="name" name="name" required>
@@ -48,7 +48,7 @@
                         <input type="text" id="group" name="group">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">➕ Deelnemer Toevoegen</button>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Deelnemer Toevoegen</button>
             </form>
         </div>
  
@@ -60,21 +60,21 @@
             </div>
         </div>
  
-        <div id="deleteConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;align-items:center;justify-content:center;">
-            <div style="background:var(--bg-card);border:1px solid var(--border-light);width:min(480px,92vw);padding:1.5rem;border-radius:16px;">
-                <h3 style="margin:0 0 .75rem 0;color:var(--text-primary);font-size:1.05rem;font-weight:700;">Deelnemer verwijderen</h3>
-                <p style="margin:0 0 1.25rem 0;color:var(--text-secondary);">Ben je zeker dat je deze deelnemer en alle bijbehorende scores wilt verwijderen?</p>
-                <div style="display:flex;gap:.6rem;justify-content:flex-end;padding-top:1rem;border-top:1px solid var(--border);">
+        <div id="deleteConfirmModal" class="modal-overlay participants-delete-modal">
+            <div class="participants-modal-box participants-delete-box">
+                <h3 class="modal-title">Deelnemer verwijderen</h3>
+                <p class="modal-description">Ben je zeker dat je deze deelnemer en alle bijbehorende scores wilt verwijderen?</p>
+                <div class="modal-actions">
                     <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Annuleren</button>
                     <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Ja, verwijderen</button>
                 </div>
             </div>
         </div>
  
-        <div id="scoreHistoryModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;align-items:center;justify-content:center;">
-            <div style="background:var(--bg-card);border:1px solid var(--border-light);width:min(920px,95vw);padding:1.5rem;border-radius:16px;max-height:86vh;overflow:auto;">
-                <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:.8rem;">
-                    <h3 id="scoreHistoryTitle" style="margin:0;color:var(--text-primary);font-size:1.05rem;font-weight:700;">Scores per onderdeel</h3>
+        <div id="scoreHistoryModal" class="modal-overlay participants-history-modal">
+            <div class="participants-modal-box participants-history-box">
+                <div class="participants-history-header">
+                    <h3 id="scoreHistoryTitle" class="modal-title">Scores per onderdeel</h3>
                     <button type="button" class="btn btn-ghost btn-sm" id="closeScoreHistoryBtn">Sluiten</button>
                 </div>
                 <div id="scoreHistoryContent" class="loading">
@@ -87,6 +87,10 @@
  
     <script src="../assets/js/utils.js"></script>
     <script>
+        const PARTICIPANTS_PER_PAGE = 10;
+        let allParticipants = [];
+        let currentParticipantsPage = 1;
+
         // Load participants on page load
         loadParticipants();
  
@@ -113,6 +117,7 @@
             if (result.success) {
                 showToast('Deelnemer succesvol toegevoegd!', 'success');
                 document.getElementById('participantForm').reset();
+                currentParticipantsPage = 1;
                 loadParticipants();
             } else {
                 showToast('Fout: ' + (result.error || 'Onbekende fout'), 'error');
@@ -125,15 +130,31 @@
             const container = document.getElementById('participantsList');
            
             if (!result.success || !result.data || result.data.length === 0) {
-                container.innerHTML = '<p style="text-align:center;padding:2.5rem;color:var(--text-secondary);">Geen deelnemers gevonden</p>';
+                allParticipants = [];
+                currentParticipantsPage = 1;
+                container.innerHTML = '<p class="empty-state">Geen deelnemers gevonden</p>';
                 return;
             }
-           
-            let html = '<table>';
+
+            allParticipants = result.data;
+
+            const totalPages = Math.ceil(allParticipants.length / PARTICIPANTS_PER_PAGE);
+            if (currentParticipantsPage > totalPages) {
+                currentParticipantsPage = totalPages;
+            }
+            if (currentParticipantsPage < 1) {
+                currentParticipantsPage = 1;
+            }
+
+            const startIndex = (currentParticipantsPage - 1) * PARTICIPANTS_PER_PAGE;
+            const endIndex = startIndex + PARTICIPANTS_PER_PAGE;
+            const visibleParticipants = allParticipants.slice(startIndex, endIndex);
+
+            let html = '<div class="table-wrapper"><table>';
             html += '<thead><tr><th>Naam</th><th>Lidnummer</th><th>Geslacht</th><th>Groep</th><th>Acties</th></tr></thead>';
             html += '<tbody>';
            
-            result.data.forEach(participant => {
+            visibleParticipants.forEach(participant => {
                 html += `<tr>
                     <td>${escapeHtml(participant.name)}</td>
                     <td>${escapeHtml(participant.number)}</td>
@@ -146,8 +167,38 @@
                 </tr>`;
             });
            
-            html += '</tbody></table>';
+            html += '</tbody></table></div>';
+
+            if (allParticipants.length > PARTICIPANTS_PER_PAGE) {
+                const prevDisabled = currentParticipantsPage === 1 ? 'disabled' : '';
+                const nextDisabled = currentParticipantsPage === totalPages ? 'disabled' : '';
+                html += `
+                    <div class="pagination-bar">
+                        <div class="pagination-info">
+                            Toon ${startIndex + 1}-${Math.min(endIndex, allParticipants.length)} van ${allParticipants.length} deelnemers
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="btn btn-ghost btn-sm" onclick="changeParticipantsPage(-1)" ${prevDisabled}><i class="fa-solid fa-chevron-left" aria-hidden="true"></i> Vorige</button>
+                            <span class="pagination-indicator">Pagina ${currentParticipantsPage} / ${totalPages}</span>
+                            <button class="btn btn-primary btn-sm" onclick="changeParticipantsPage(1)" ${nextDisabled}>Volgende <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                `;
+            }
+
             container.innerHTML = html;
+        }
+
+        function changeParticipantsPage(direction) {
+            const totalPages = Math.ceil(allParticipants.length / PARTICIPANTS_PER_PAGE);
+            const nextPage = currentParticipantsPage + direction;
+
+            if (nextPage < 1 || nextPage > totalPages) {
+                return;
+            }
+
+            currentParticipantsPage = nextPage;
+            loadParticipants();
         }
  
         // Delete participant handler
@@ -189,12 +240,12 @@
  
             const result = await getScoresByParticipant(id);
             if (!result.success || !result.data) {
-                scoreHistoryContent.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-secondary);">Scores konden niet geladen worden</p>';
+                scoreHistoryContent.innerHTML = '<p class="empty-state empty-state-sm">Scores konden niet geladen worden</p>';
                 return;
             }
  
             if (result.data.length === 0) {
-                scoreHistoryContent.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-secondary);">Nog geen scores voor deze deelnemer</p>';
+                scoreHistoryContent.innerHTML = '<p class="empty-state empty-state-sm">Nog geen scores voor deze deelnemer</p>';
                 return;
             }
  
